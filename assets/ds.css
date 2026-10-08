@@ -1,0 +1,95 @@
+/* Sistema de design tecnico: epura / desenho geometrico.
+   Linha preta, moldura pontilhada cinza, preenchimento D9D9D9, tipografia mono. */
+:root{
+  --ink:#000;
+  --paper:#fff;
+  --grid:#8a8a8a;
+  --fill:#d9d9d9;
+  --fill-2:#efefef;
+  --muted:#555;
+  --mono:"IBM Plex Mono","JetBrains Mono",ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;
+  --gutter:clamp(16px,4vw,40px);
+}
+*{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%}
+body{margin:0;background:var(--paper);color:var(--ink);font:400 14px/1.55 var(--mono);}
+a{color:inherit;text-decoration-thickness:1px;text-underline-offset:3px}
+a:hover{background:var(--ink);color:var(--paper);text-decoration:none}
+h1,h2,h3{font-weight:700;margin:0;line-height:1.2}
+h1{font-size:clamp(22px,3.4vw,34px);letter-spacing:-.01em}
+h2{font-size:clamp(17px,2vw,22px)}
+h3{font-size:14px}
+p{margin:0 0 .8em}
+.wrap{max-width:1240px;margin:0 auto;padding:0 var(--gutter)}
+
+/* topo */
+.top{border-bottom:2px dotted var(--grid);}
+.top .wrap{display:flex;flex-wrap:wrap;gap:10px 28px;align-items:center;justify-content:space-between;padding-top:14px;padding-bottom:14px}
+.brand{font-weight:700;letter-spacing:.02em;text-decoration:none}
+.brand i{font-style:normal;display:inline-block;width:0;height:0;border-left:7px solid transparent;border-right:7px solid transparent;border-bottom:12px solid var(--ink);margin-right:8px;vertical-align:-1px}
+.nav{display:flex;flex-wrap:wrap;gap:4px 18px;font-size:12px}
+.nav a{text-decoration:none;padding:2px 4px;border-bottom:1px solid transparent}
+.nav a[aria-current="page"]{border-bottom-color:var(--ink);font-weight:700}
+
+/* cabecalho de pagina */
+.hero{padding:44px 0 26px}
+.hero .kicker{font-size:12px;color:var(--muted);margin-bottom:10px;letter-spacing:.04em}
+.hero p{max-width:74ch;color:#222}
+
+/* folha tecnica (moldura pontilhada) */
+.sheet{border:2px dotted var(--grid);margin:0 0 36px;background:var(--paper)}
+.sheet>header{display:flex;flex-wrap:wrap;gap:6px 16px;align-items:baseline;padding:14px 18px 0}
+.sheet>header .code{font-weight:700;background:var(--ink);color:var(--paper);padding:1px 8px;font-size:12px}
+.sheet>header h2{flex:1 1 280px}
+.sheet>header .src{font-size:11px;color:var(--muted)}
+.sheet .lede{padding:6px 18px 0;max-width:80ch;color:#222;font-size:13px}
+.fig{padding:10px 18px 6px;overflow-x:auto}
+.fig svg{display:block;width:100%;min-width:760px;height:auto}
+.sheet footer{border-top:2px dotted var(--grid);padding:10px 18px;font-size:12px;color:#222;display:flex;flex-wrap:wrap;gap:6px 24px}
+.sheet footer b{font-weight:700}
+.tag{display:inline-block;border:1px solid var(--ink);padding:0 6px;font-size:11px;margin-right:6px}
+.tag.fill{background:var(--fill)}
+.tag.solid{background:var(--ink);color:var(--paper)}
+
+/* tabelas tecnicas */
+table.spec{border-collapse:collapse;width:100%;font-size:12px}
+table.spec th,table.spec td{border:1px solid var(--ink);padding:7px 9px;text-align:left;vertical-align:top}
+table.spec th{background:var(--fill);font-weight:700}
+.tbl{padding:6px 18px 14px;overflow-x:auto}
+
+/* grade de indice */
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(270px,1fr));gap:18px;margin-bottom:40px}
+.card{display:block;border:2px dotted var(--grid);padding:16px;text-decoration:none;min-height:150px}
+.card:hover{background:var(--fill-2);color:var(--ink);border-color:var(--ink)}
+.card .code{font-size:11px;color:var(--muted)}
+.card h3{font-size:16px;margin:6px 0 8px}
+.card p{font-size:12px;color:#222;margin:0}
+.sec{display:flex;gap:14px;align-items:baseline;margin:34px 0 14px;border-bottom:2px solid var(--ink);padding-bottom:6px}
+.sec span{font-size:12px;color:var(--muted)}
+
+/* SVG utilitarios */
+svg text{font-family:var(--mono);fill:var(--ink)}
+svg .t{font-size:14px}
+svg .ts{font-size:11.5px}
+svg .tb{font-weight:700}
+svg .tt{font-size:17px;font-weight:700}
+svg .tm{fill:var(--muted)}
+svg .tw{fill:#fff}
+svg .ln{stroke:var(--ink);stroke-width:1.5;fill:none}
+svg .lb{stroke:var(--ink);stroke-width:3;fill:none}
+svg .lt{stroke:var(--ink);stroke-width:1;fill:none}
+svg .ld{stroke:var(--ink);stroke-width:1.5;fill:none;stroke-dasharray:3 4}
+svg .lg{stroke:var(--grid);stroke-width:2;fill:none;stroke-dasharray:2 3}
+svg .fl{fill:var(--fill);stroke:var(--ink);stroke-width:1.5}
+svg .fl2{fill:var(--fill-2);stroke:var(--ink);stroke-width:1.5}
+svg .fp{fill:var(--paper);stroke:var(--ink);stroke-width:1.5}
+svg .fk{fill:var(--ink);stroke:var(--ink)}
+svg .fh{fill:url(#hatch);stroke:var(--ink);stroke-width:1.5}
+svg .frame{fill:none;stroke:var(--grid);stroke-width:2;stroke-dasharray:2 3}
+svg .arr{fill:var(--fill);stroke:none}
+
+/* utilitarios */
+.row{display:flex;flex-wrap:wrap;gap:12px}
+.mono-note{font-size:11px;color:var(--muted)}
+footer.site{border-top:2px dotted var(--grid);margin-top:30px;padding:22px 0 40px;font-size:12px;color:var(--muted)}
+@media print{.top,footer.site{display:none}.sheet{break-inside:avoid}}
