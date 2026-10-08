@@ -1,0 +1,344 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Construtor de hierarquia RevOps</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="assets/ds.css">
+<style>
+.builder{display:grid;grid-template-columns:minmax(300px,360px) 1fr;gap:24px;align-items:start}
+@media(max-width:960px){.builder{grid-template-columns:1fr}}
+.panel{border:2px dotted var(--grid);padding:14px 16px;margin-bottom:18px;background:var(--paper)}
+.panel h3{display:flex;gap:10px;align-items:baseline;margin-bottom:10px}
+.panel h3 .code{background:var(--ink);color:var(--paper);padding:0 7px;font-size:11px}
+fieldset{border:0;margin:0 0 16px;padding:0}
+legend{font-weight:700;font-size:12px;margin-bottom:6px;padding:0}
+.opt{display:block;position:relative;margin:0 0 6px}
+.opt input{position:absolute;opacity:0;inset:0;cursor:pointer;margin:0}
+.opt span{display:block;border:1px solid var(--ink);padding:6px 9px;font-size:12px;line-height:1.35}
+.opt small{display:block;font-size:11px;color:var(--muted)}
+.opt input:checked+span{background:var(--ink);color:var(--paper)}
+.opt input:checked+span small{color:#ccc}
+.opt input:focus-visible+span{outline:2px solid var(--ink);outline-offset:2px}
+.opt input:disabled+span{border-style:dashed;color:#999;background:repeating-linear-gradient(45deg,#fff 0 5px,#efefef 5px 6px)}
+.chk{display:flex;gap:8px;align-items:flex-start;margin:0 0 6px;font-size:12px;cursor:pointer}
+.chk input{margin-top:3px;accent-color:#000}
+.btns{display:flex;flex-wrap:wrap;gap:8px}
+button{font:inherit;font-size:12px;background:var(--paper);color:var(--ink);border:1px solid var(--ink);padding:5px 10px;cursor:pointer}
+button:hover,button:focus-visible{background:var(--ink);color:var(--paper)}
+.chip{border-style:dotted}
+.stage{overflow-x:auto;border:2px dotted var(--grid);padding:10px;margin-bottom:18px}
+.stage svg{display:block;min-width:640px;width:100%;height:auto}
+.res{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:14px;margin-bottom:18px}
+.res>div{border:1px solid var(--ink);padding:10px 12px;font-size:12px}
+.res h4{margin:0 0 6px;font-size:12px;background:var(--fill);margin:-10px -12px 8px;padding:5px 12px;border-bottom:1px solid var(--ink)}
+.alert{border-left:6px solid var(--ink);background:var(--fill-2);padding:6px 10px;margin:0 0 8px;font-size:12px}
+.meter{display:flex;gap:3px;margin:6px 0}
+.meter i{flex:1;height:12px;border:1px solid var(--ink)}
+.meter i.on{background:var(--ink)}
+.mx{border-collapse:collapse;font-size:11px}
+.mx th,.mx td{border:1px solid var(--ink);text-align:center;padding:0}
+.mx th{background:var(--fill);padding:4px 6px;font-weight:700}
+.mx th.l{text-align:left;white-space:nowrap}
+.mx td button{border:0;width:30px;height:28px;padding:0;font-size:13px}
+.mx td.bad{background:url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="6" height="6"><path d="M0 6L6 0" stroke="black" stroke-width=".6"/></svg>')}
+.mx td.sel button{background:var(--ink);color:var(--paper)}
+.legend{font-size:11px;color:var(--muted);margin-top:8px}
+.tri{display:flex;flex-wrap:wrap;gap:10px}
+.tri div{flex:1 1 150px;border:1px dotted var(--grid);padding:6px 8px;font-size:12px}
+.tri b{display:block;font-size:11px;color:var(--muted);font-weight:400}
+</style>
+</head>
+<body>
+<main class="wrap">
+  <section class="hero">
+    <div class="kicker">PÁGINA 05 · FW-25 · CONSTRUTOR</div>
+    <h1>Construtor de hierarquia RevOps</h1>
+    <p>Monte uma estrutura combinando liderança da receita, posição de RevOps e modelo de Ops funcionais. O desenho mostra benefícios, riscos e condições do quadro 6.12. Não existe organograma universal: são arranjos e combinações, não degraus de uma escada.</p>
+  </section>
+
+  <div class="builder">
+    <aside>
+      <div class="panel">
+        <h3><span class="code">00</span>Arquétipos</h3>
+        <div class="btns" id="presets"></div>
+        <p class="legend">Pontos de partida ilustrativos, não recomendações.</p>
+      </div>
+      <div class="panel">
+        <h3><span class="code">01</span>Montagem</h3>
+        <fieldset><legend>A. Liderança da receita</legend><div id="g-s"></div></fieldset>
+        <fieldset><legend>B. Posição de RevOps</legend><div id="g-p"></div></fieldset>
+        <fieldset><legend>C. Ops funcionais</legend><div id="g-o"></div></fieldset>
+        <label class="chk"><input type="checkbox" id="bu"><span>Várias unidades de negócio</span></label>
+      </div>
+      <div class="panel">
+        <h3><span class="code">02</span>Condições presentes</h3>
+        <div id="g-c"></div>
+        <p class="legend">Maturidade é capacidade de sustentar compromissos sob pressão, não o desenho do organograma.</p>
+      </div>
+    </aside>
+
+    <section>
+      <div class="stage"><svg id="chart" role="img" aria-label="Organograma montado"></svg></div>
+      <div class="btns" style="margin-bottom:18px">
+        <button id="b-link">Copiar link</button>
+        <button id="b-svg">Baixar SVG</button>
+        <button id="b-txt">Copiar resumo</button>
+        <span id="msg" class="mono-note" style="align-self:center"></span>
+      </div>
+      <div class="panel">
+        <h3><span class="code">03</span>Três coisas distintas</h3>
+        <div class="tri" id="tri"></div>
+        <p class="legend">Liderança da receita, função de RevOps e patrocínio executivo podem ser acumulados, desde que fique explícito (6.12).</p>
+      </div>
+      <div class="res" id="res"></div>
+    </section>
+  </div>
+
+  <div class="sec"><h2>Mapa de combinações</h2><span id="count"></span></div>
+  <p class="lede" style="max-width:80ch">Linhas: posição de RevOps. Colunas: liderança da receita (A1 pares, A2 CRO comum, A3 GTM sob CRO) × Ops (C1 áreas, C2 central, C3 híbrido). Clique para carregar o arranjo.</p>
+  <div class="tbl" style="padding-left:0"><table class="mx" id="mx"></table></div>
+  <p class="legend">● coincide com 2 arranjos do quadro 6.12 · ◐ com 1 · ○ fora do quadro (avaliar pelas mesmas condições) · hachura = incompatível (não há CRO).</p>
+</main>
+<script src="assets/shell.js"></script>
+<script>
+(function(){
+"use strict";
+var S={1:["Áreas pares","Marketing, Vendas e CS reportam ao CEO"],
+       2:["CRO comum","CRO comanda Marketing, Vendas e CS"],
+       3:["GTM sob CRO, CS à parte","CRO comanda Marketing e Vendas; CS reporta ao CEO"]};
+var P={1:["Par das lideranças","reporta ao CEO"],
+       2:["Sob o CRO","apoia a liderança comum de receita"],
+       3:["CRO acumula RevOps","acúmulo explícito"],
+       4:["Dentro de Vendas","Field/Sales Ops, origem como suporte"],
+       5:["Dentro de Marketing","origem como suporte"],
+       6:["Sob o CFO","proximidade com finanças"],
+       7:["Sob o COO","proximidade com a entrega"]};
+var O={1:["Dentro de cada área","cada Ops responde à sua liderança"],
+       2:["Centralizados em RevOps","Ops reportam a RevOps"],
+       3:["Híbrido","núcleo em RevOps, Ops perto das unidades"]};
+var C=[["c1","Mandato formal e alçadas conhecidas antes do conflito"],
+       ["c2","Conceitos compartilhados e SLAs"],
+       ["c3","Metas complementares entre áreas"],
+       ["c4","Fóruns que decidem, com registro"],
+       ["c5","CEO sustenta o combinado no comportamento"],
+       ["c6","Finanças e RH presentes desde o desenho"]];
+var ROW={
+ par:["Preserva a autonomia das áreas e favorece a coordenação transversal.","Recomendações ignoradas, impasses prolongados ou decisões dominadas pela área mais influente.","Mandato formal, metas complementares, alçadas claras e um caminho efetivo para levar impasses à liderança responsável."],
+ com:["Facilita decisões que exigem redistribuir prioridades e recursos entre áreas.","Centralização excessiva e urgências comerciais se sobrepondo à margem, à entrega e à retenção.","Delegação, responsabilidades explícitas e critérios que considerem o resultado ao longo da jornada do cliente."],
+ hib:["Combina padrões compartilhados com conhecimento das particularidades de cada negócio.","Proliferação de exceções, definições incompatíveis e perda de comparabilidade.","Regras comuns, responsáveis locais e critérios claros para autorizar e revisar adaptações."]
+};
+var PRESETS=[
+ ["Scale-up, patrocínio forte",{s:1,p:1,o:3,u:0,c:"111111"}],
+ ["Receita sob um CRO",{s:2,p:3,o:2,u:0,c:"111011"}],
+ ["Grupo multiunidade",{s:2,p:2,o:3,u:1,c:"111101"}],
+ ["Reporte como na GitLab [R6]",{s:2,p:4,o:1,u:0,c:"101010"}],
+ ["Origem como suporte",{s:1,p:5,o:1,u:0,c:"000000"}]
+];
+var st={s:1,p:1,o:3,u:0,c:"111111"};
+function valid(s,p){return !(s===1&&(p===2||p===3));}
+function $(i){return document.getElementById(i);}
+function esc(t){return String(t).replace(/[&<>"]/g,function(m){return {"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[m];});}
+
+/* ---------- controles ---------- */
+function radios(host,name,obj,key){
+  var h="";
+  Object.keys(obj).forEach(function(k){
+    h+='<label class="opt"><input type="radio" name="'+name+'" value="'+k+'"><span><b>'+name.toUpperCase()+k+'</b> '+esc(obj[k][0])+'<small>'+esc(obj[k][1])+'</small></span></label>';
+  });
+  $(host).innerHTML=h;
+  $(host).addEventListener("change",function(e){st[key]=+e.target.value;fix(key);render();});
+}
+function fix(changed){
+  if(!valid(st.s,st.p)){ if(changed==="s"){st.p=1;}else{st.s=2;} }
+}
+radios("g-s","a",S,"s");radios("g-p","b",P,"p");radios("g-o","c",O,"o");
+$("g-c").innerHTML=C.map(function(c,i){return '<label class="chk"><input type="checkbox" data-i="'+i+'"><span>'+esc(c[1])+'</span></label>';}).join("");
+$("g-c").addEventListener("change",function(e){
+  var a=st.c.split("");a[+e.target.dataset.i]=e.target.checked?"1":"0";st.c=a.join("");render();
+});
+$("bu").addEventListener("change",function(e){st.u=e.target.checked?1:0;render();});
+$("presets").innerHTML=PRESETS.map(function(p,i){return '<button class="chip" data-i="'+i+'">'+esc(p[0])+'</button>';}).join("");
+$("presets").addEventListener("click",function(e){var i=e.target.dataset.i;if(i!=null){st=Object.assign({},PRESETS[i][1]);render();}});
+
+/* ---------- arvore ---------- */
+function build(){
+  var N=[],E=[],by={};
+  function add(id,label,parent,kind,sub){var n={id:id,label:label,parent:parent,kind:kind,sub:sub||"",ch:[]};N.push(n);by[id]=n;if(parent)by[parent].ch.push(n);return n;}
+  add("ceo","CEO",null,"ceo","patrocínio");
+  if(st.s===1){add("mkt","Marketing","ceo","area");add("sales","Vendas","ceo","area");add("cs","CS","ceo","area");}
+  if(st.s===2){add("cro","CRO","ceo","area","liderança da receita");add("mkt","Marketing","cro","area");add("sales","Vendas","cro","area");add("cs","CS","cro","area");}
+  if(st.s===3){add("cro","CRO","ceo","area","liderança GTM");add("mkt","Marketing","cro","area");add("sales","Vendas","cro","area");add("cs","CS","ceo","area");}
+  if(st.p===7)add("coo","COO / Operações","ceo","sup");
+  add("cfo","Finanças (CFO)","ceo","sup");
+  add("rh","RH","ceo","sup");
+  var rev;
+  var rs="coordena e arbitra";
+  if(st.p===3){by.cro.kind="rev";by.cro.label="CRO + RevOps";by.cro.sub="acúmulo explícito";rev="cro";}
+  else{
+    var par={1:"ceo",2:"cro",4:"sales",5:"mkt",6:"cfo",7:"coo"}[st.p];
+    add("rev","RevOps",par,"rev",rs);rev="rev";
+  }
+  var m=st.u?" x N":"";
+  var ops=[["mops","Marketing Ops","mkt"],["sops","Sales Ops","sales"],["cops","CS Ops","cs"]];
+  ops.forEach(function(o){
+    var parent=st.o===2?rev:o[2];
+    add(o[0],o[1],parent,"ops",(st.u?"por unidade":""));
+    if(st.o===2)E.push([o[0],o[2],"atende"]);
+    if(st.o===3)E.push([o[0],rev,"padrão"]);
+  });
+  return {N:N,E:E,by:by,rev:rev};
+}
+var NW=140,NH=46,UX=156,LV=108;
+function layout(T){
+  var leaves=0,maxd=0;
+  (function place(n,d){
+    n.d=d;if(d>maxd)maxd=d;
+    if(!n.ch.length){n.x=leaves+0.5;leaves++;return;}
+    n.ch.forEach(function(c){place(c,d+1);});
+    n.x=(n.ch[0].x+n.ch[n.ch.length-1].x)/2;
+  })(T.by.ceo,0);
+  T.W=Math.max(900,leaves*UX+40);T.H=(maxd+1)*LV+70;
+  var off=(T.W-leaves*UX)/2;
+  T.N.forEach(function(n){n.px=off+n.x*UX;n.py=24+n.d*LV;});
+}
+function node(n){
+  var f="#fff",s="#000",sw=1.5,tc="#000",da="";
+  if(n.kind==="rev"){f="#000";tc="#fff";}
+  if(n.kind==="ops"){f="#d9d9d9";}
+  if(n.kind==="sup"){f="#efefef";da=' stroke-dasharray="4 3"';}
+  if(n.kind==="ceo"){sw=3;}
+  var x=n.px-NW/2,y=n.py;
+  var o='<rect x="'+x+'" y="'+y+'" width="'+NW+'" height="'+NH+'" fill="'+f+'" stroke="'+s+'" stroke-width="'+sw+'"'+da+'/>';
+  var two=!!n.sub;
+  o+='<text x="'+n.px+'" y="'+(y+(two?20:28))+'" text-anchor="middle" font-size="12.5" font-weight="700" style="fill:'+tc+'">'+esc(n.label)+'</text>';
+  if(two)o+='<text x="'+n.px+'" y="'+(y+35)+'" text-anchor="middle" font-size="10" style="fill:'+(n.kind==="rev"?"#ddd":"#555")+'">'+esc(n.sub)+'</text>';
+  return o;
+}
+function draw(T){
+  layout(T);
+  var g='<g font-family="IBM Plex Mono,ui-monospace,Menlo,Consolas,monospace">';
+  T.N.forEach(function(n){
+    n.ch.forEach(function(c){
+      var y1=n.py+NH,y2=c.py,ym=(y1+y2)/2;
+      g+='<path d="M'+n.px+' '+y1+'V'+ym+'H'+c.px+'V'+y2+'" fill="none" stroke="#000" stroke-width="1.5"/>';
+    });
+  });
+  T.E.forEach(function(e,i){
+    var a=T.by[e[0]],b=T.by[e[1]],dx=(i%3-1)*14+18,ax=a.px+dx,bx=b.px+dx,d;
+    if(b.py<a.py){d='M'+ax+' '+a.py+'C'+ax+' '+(a.py-40)+' '+bx+' '+(b.py+NH+40)+' '+bx+' '+(b.py+NH);}
+    else if(b.py>a.py){d='M'+ax+' '+(a.py+NH)+'C'+ax+' '+(a.py+NH+40)+' '+bx+' '+(b.py-40)+' '+bx+' '+b.py;}
+    else{d='M'+ax+' '+(a.py+NH)+'C'+ax+' '+(a.py+NH+44)+' '+bx+' '+(b.py+NH+44)+' '+bx+' '+(b.py+NH);}
+    g+='<path d="'+d+'" fill="none" stroke="#000" stroke-width="1.4" stroke-dasharray="3 4"/>';
+  });
+  T.N.forEach(function(n){g+=node(n);});
+  var ly=T.H-22;
+  g+='<line x1="24" y1="'+ly+'" x2="64" y2="'+ly+'" stroke="#000" stroke-width="1.5"/><text x="72" y="'+(ly+4)+'" font-size="11">reporte hierárquico</text>';
+  g+='<line x1="230" y1="'+ly+'" x2="270" y2="'+ly+'" stroke="#000" stroke-width="1.4" stroke-dasharray="3 4"/><text x="278" y="'+(ly+4)+'" font-size="11">'+(st.o===2?"atende (serviço)":st.o===3?"padrão comum":"sem padrão comum")+'</text>';
+  g+='<rect x="480" y="'+(ly-7)+'" width="14" height="14" fill="#000"/><text x="500" y="'+(ly+4)+'" font-size="11">RevOps</text>';
+  g+='<rect x="570" y="'+(ly-7)+'" width="14" height="14" fill="#d9d9d9" stroke="#000"/><text x="590" y="'+(ly+4)+'" font-size="11">Ops funcionais</text>';
+  g+='</g>';
+  var svg=$("chart");
+  svg.setAttribute("viewBox","0 0 "+T.W+" "+T.H);
+  svg.innerHTML=g;
+}
+
+/* ---------- analise ---------- */
+function flags(){
+  return {par:st.p===1,com:(st.p===2||st.p===3),hib:st.o===3};
+}
+function analyse(){
+  var c=st.c.split("").map(function(x){return x==="1";});
+  var f=flags(),cards=[],alerts=[];
+  var n=c.filter(Boolean).length;
+  if(f.par){cards.push(["Arranjo: RevOps como par",ROW.par]);
+    if(st.s!==1)alerts.push("Aqui o par é do CRO, não de lideranças funcionais separadas.");}
+  if(f.com)cards.push(["Arranjo: liderança comum de receita",ROW.com]);
+  if(f.hib)cards.push(["Arranjo: coordenação central com Ops perto das unidades",ROW.hib]);
+  if(st.p===4||st.p===5)cards.push(["Origem como suporte (6.14)",["Contribui organizando dados, relatórios e demandas das lideranças.","Identifica o problema entre áreas, mas não encontra caminho para transformá-lo em decisão que todos precisem respeitar.","Patrocínio que sustenta a mudança, mecanismos cotidianos de integração e um caminho para levar o impasse a quem decide."]]);
+  if(st.p===6||st.p===7)cards.push(["Variante fora do quadro (hipótese editorial)",[st.p===6?"Proximidade com conceitos contábeis, forecast e caixa.":"Proximidade com capacidade e prazos de entrega.",st.p===6?"Viés financeiro e distância da jornada comercial e de CS.":"Distância das decisões comerciais e de aquisição.","Mandato, alçadas e caminho de escalonamento, como nos demais arranjos. Validar antes de adotar."]]);
+  if(st.o===1)cards.push(["Ops dentro de cada área",["Cada Ops conhece bem a sua área.","Definições incompatíveis e perda de comparabilidade entre áreas (risco do quadro 6.12 para Ops sem padrão comum).","Regras comuns e responsáveis claros, antes de qualquer descentralização."]]);
+  if(st.o===2)cards.push(["Ops centralizados em RevOps (hipótese editorial)",["Padrões únicos e comparabilidade.","Distância do conhecimento local de cada área e gargalo na fila de demandas.","Responsáveis locais para particularidades e critério para autorizar adaptações."]]);
+  if(f.par&&!c[0])alerts.push("RevOps como par sem mandato pode devolver a operação à negociação informal entre departamentos (6.12).");
+  if(f.com&&!c[2])alerts.push("Liderança comum sem metas complementares: urgências comerciais podem se sobrepor a margem, entrega e retenção.");
+  if((st.o!==2)&&!c[1])alerts.push("Sem conceitos compartilhados, Ops perto das áreas tendem a divergir (proliferação de exceções).");
+  if((st.p>=4)&&!c[0])alerts.push("Sem mandato, RevOps nesta posição depende de patrocínio para levar impasses acima do seu nível.");
+  if(st.u&&st.o!==2)alerts.push("Várias unidades multiplicam Ops e exceções: exija regra comum e revisão das adaptações.");
+  if(!c[5])alerts.push("Finanças e RH entram tarde: restrições aparecem quando a conta chega (6.8 e 6.9).");
+  if(!c[4])alerts.push("Se o CEO pede colaboração mas premia resultado local, enfraquece o alinhamento (6.12).");
+  var stress=[["Trimestre difícil",c[0]&&c[3]&&c[4]],["Troca de um gestor",c[1]&&c[3]],["Impasse entre áreas",c[0]&&c[3]]];
+  var lvl=n>=5?"sustenta sob pressão":n>=3?"sustenta parcialmente":"frágil: tende à negociação informal";
+  return {cards:cards,alerts:alerts,stress:stress,n:n,lvl:lvl};
+}
+function render(){
+  fix(null);
+  document.querySelectorAll('input[name="a"]').forEach(function(i){i.checked=+i.value===st.s;});
+  document.querySelectorAll('input[name="b"]').forEach(function(i){i.checked=+i.value===st.p;i.disabled=!valid(st.s,+i.value);});
+  document.querySelectorAll('input[name="c"]').forEach(function(i){i.checked=+i.value===st.o;});
+  $("bu").checked=!!st.u;
+  document.querySelectorAll("#g-c input").forEach(function(i){i.checked=st.c[+i.dataset.i]==="1";});
+  var T=build();draw(T);
+  var a=analyse();
+  var h='<div><h4>Leitura do arranjo</h4>'+(a.cards.length?a.cards.map(function(c){return '<p><b>'+esc(c[0])+'</b><br><span class="tag fill">benefício</span>'+esc(c[1][0])+'<br><span class="tag">risco</span>'+esc(c[1][1])+'<br><span class="tag solid">condições</span>'+esc(c[1][2])+'</p>';}).join(""):'<p>Combinação sem arranjo do quadro. Avalie pelas condições ao lado.</p>')+'</div>';
+  h+='<div><h4>Prontidão: '+a.n+' de 6</h4><div class="meter">'+[0,1,2,3,4,5].map(function(i){return '<i class="'+(i<a.n?"on":"")+'"></i>';}).join("")+'</div><p><b>'+esc(a.lvl)+'</b></p>'+a.stress.map(function(s){return '<p>'+(s[1]?"[x]":"[ ]")+' '+esc(s[0])+'</p>';}).join("")+'<p class="mono-note">Teste de estresse é heurística editorial, não medição.</p></div>';
+  h+='<div><h4>Alertas</h4>'+(a.alerts.length?a.alerts.map(function(t){return '<div class="alert">'+esc(t)+'</div>';}).join(""):'<p>Nenhum alerta com as condições marcadas.</p>')+'</div>';
+  $("res").innerHTML=h;
+  $("tri").innerHTML='<div><b>Liderança da receita</b>'+esc(st.s===1?"sem liderança comum":"CRO")+'</div><div><b>Função RevOps</b>'+esc(P[st.p][0])+'</div><div><b>Patrocínio executivo</b>'+(st.c[4]==="1"?"ativo no comportamento":"não sustentado")+'</div>';
+  matrix();
+  try{history.replaceState(null,"","#"+hash());}catch(e){}
+}
+function hash(){return "s="+st.s+"&p="+st.p+"&o="+st.o+"&u="+st.u+"&c="+st.c;}
+function load(){
+  var h=location.hash.slice(1);if(!h)return;
+  var q={};h.split("&").forEach(function(kv){var a=kv.split("=");q[a[0]]=a[1];});
+  if(q.s&&S[q.s])st.s=+q.s;if(q.p&&P[q.p])st.p=+q.p;if(q.o&&O[q.o])st.o=+q.o;
+  if(q.u)st.u=+q.u?1:0;if(q.c&&/^[01]{6}$/.test(q.c))st.c=q.c;
+}
+function matrix(){
+  var t=$("mx"),h='<tr><th class="l" rowspan="2">Posição de RevOps</th>';
+  [1,2,3].forEach(function(s){h+='<th colspan="3">A'+s+' '+esc(S[s][0])+'</th>';});
+  h+='</tr><tr>';
+  [1,2,3].forEach(function(){[1,2,3].forEach(function(o){h+='<th>C'+o+'</th>';});});
+  h+='</tr>';
+  var total=0;
+  Object.keys(P).forEach(function(p){
+    p=+p;h+='<tr><th class="l">B'+p+' '+esc(P[p][0])+'</th>';
+    [1,2,3].forEach(function(s){[1,2,3].forEach(function(o){
+      if(!valid(s,p)){h+='<td class="bad" title="incompatível: não há CRO"></td>';return;}
+      total++;
+      var k=(p===1?1:0)+((p===2||p===3)?1:0)+(o===3?1:0);
+      var g=k>=2?"●":k===1?"◐":"○";
+      var sel=(st.s===s&&st.p===p&&st.o===o);
+      h+='<td'+(sel?' class="sel"':'')+'><button data-s="'+s+'" data-p="'+p+'" data-o="'+o+'" aria-label="A'+s+' B'+p+' C'+o+'">'+g+'</button></td>';
+    });});
+    h+='</tr>';
+  });
+  t.innerHTML=h;
+  $("count").textContent=total+" combinações estruturais válidas, "+(total*2)+" com uma ou várias unidades";
+}
+$("mx").addEventListener("click",function(e){var b=e.target.closest("button");if(!b)return;st.s=+b.dataset.s;st.p=+b.dataset.p;st.o=+b.dataset.o;render();});
+
+/* ---------- exportar ---------- */
+function say(t){$("msg").textContent=t;setTimeout(function(){$("msg").textContent="";},2200);}
+function copy(t,ok){
+  if(navigator.clipboard&&navigator.clipboard.writeText){navigator.clipboard.writeText(t).then(function(){say(ok);},function(){say("Copie manualmente");});}
+  else say("Copie manualmente");
+}
+$("b-link").onclick=function(){copy(location.href.split("#")[0]+"#"+hash(),"Link copiado");};
+$("b-txt").onclick=function(){
+  var a=analyse();
+  copy("Estrutura: "+S[st.s][0]+" | RevOps: "+P[st.p][0]+" | Ops: "+O[st.o][0]+(st.u?" | várias unidades":"")+"\nProntidão: "+a.n+"/6, "+a.lvl+"\nAlertas:\n- "+(a.alerts.join("\n- ")||"nenhum"),"Resumo copiado");
+};
+$("b-svg").onclick=function(){
+  var s=$("chart").cloneNode(true);s.setAttribute("xmlns","http://www.w3.org/2000/svg");
+  s.insertAdjacentHTML("afterbegin",'<rect width="100%" height="100%" fill="#fff"/>');
+  var blob=new Blob([s.outerHTML],{type:"image/svg+xml"}),a=document.createElement("a");
+  a.href=URL.createObjectURL(blob);a.download="hierarquia-revops.svg";a.click();setTimeout(function(){URL.revokeObjectURL(a.href);},500);
+};
+load();render();
+})();
+</script>
+</body>
+</html>
